@@ -1,0 +1,33 @@
+.border-transparent {
+  border-color: transparent !important;
+}
+
+.topic-link:hover {
+  background-color: #f0f2f5;
+  border-left-color: #cddbea !important;
+}
+
+.topic-link.active {
+  background-color: #f8f9fa;
+  border-left-color: #0d6efd !important;
+}
+
+.technology-div{
+  overflow-y: hidden;
+  height: 90.5vh;
+}
+
+.techDetails{
+  max-height: 87.5vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+@media (min-width: 800px) and (max-width: 1439px) {
+  .technology-div{
+    height: 89vh;
+  }
+  .techDetails{
+    max-height: 85vh;
+  }
+}
