@@ -14,7 +14,6 @@ function Topicdetails() {
   const [fetchTopicdetails, { data: fetchedDetails }] = useLazyTopicdetailsQuery();
   const {data,isLoading}=useGetAlltechnologiesQuery()
   
-  console.log("data",data)
 
 
   useEffect(() => {
@@ -42,7 +41,6 @@ function Topicdetails() {
   }, [uniqueTabs, activeTab]);
 
   const deleteContent = async (contentId) => {
-    console.log(contentId);
     await deletecontentFn({ tid, cid, topicId, contentId });
     setTopicdetails((prevDetails) => prevDetails.filter((content) => content._id !== contentId));
   };

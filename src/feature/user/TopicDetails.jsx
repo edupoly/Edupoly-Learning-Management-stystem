@@ -1,33 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useGetAlltechnologiesQuery, useTopicdetailsQuery } from "../../services/technology";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
+import { Helmet } from "react-helmet";
 
 function TopicDetails() {
-  const { tid, cid, toid } = useParams();
-  const { data: technology, isLoading: isTechnologyLoading } = useTopicdetailsQuery({ tid, cid });
+  const { tName, cName, toName } = useParams();
   const { data: allTechnologies, isLoading: isAllTechnologiesLoading } = useGetAlltechnologiesQuery();
+  const tech = allTechnologies?.find((el)=> el.title===tName)
+  const concept = tech?.concepts?.find((el)=> el.conceptName===cName.replaceAll('_',' '))
+  const filteredTopic = concept?.topics?.find((el)=> el.title===toName.replaceAll('_',' '))
+  const tid=tech?._id
+  const cid=concept?._id
+
+  const { isLoading: isTechnologyLoading } = useTopicdetailsQuery({ tid , cid });
   const [topicdetails, setTopicdetails] = useState([]);
   const [activeTab, setActiveTab] = useState("");
+  const uniqueTabs = useMemo(() => {
+    return [...new Set(topicdetails.map((content) => content.type))];
+  }, [topicdetails]);
+  const filteredContent = topicdetails.filter((content) => content.type === activeTab);
 
   useEffect(() => {
-    if (technology) {
-      const selectedConcept = technology?.concepts?.find((concept) => concept._id === cid);
-      const selectedTopic = selectedConcept?.topics?.find((topic) => topic._id === toid);
-      const validContents = selectedTopic?.contents?.filter((content) => typeof content.content === "string");
+    if (filteredTopic) {
+      var validContents = filteredTopic?.contents?.filter((content) => typeof content.content === "string");
 
       setTopicdetails(validContents || []);
     }
-  }, [technology, cid, toid]);
+  }, [filteredTopic]);
 
   useEffect(() => {
-    if (topicdetails.length > 0) {
-      setActiveTab(topicdetails[0].type);
-    }
-  }, [topicdetails]);
-
-  const uniqueTabs = [...new Set(topicdetails.map((content) => content.type))];
-  const filteredContent = topicdetails.filter((content) => content.type === activeTab);
+    const tab =localStorage.getItem('activeTab')
+    const findTab = uniqueTabs?.filter((el)=> el===tab)
+    let filteredTab = findTab.length>0 ? tab : topicdetails[0]?.type
+    setActiveTab(filteredTab)
+    localStorage.setItem('activeTab',filteredTab)
+    
+  }, [uniqueTabs,topicdetails]);
 
   return (
     <div className="container-fluid py-1 px-0 bg-white">
@@ -41,42 +50,27 @@ function TopicDetails() {
       ) : (
         <>
           {/* Header Section */}
-          <div className="d-flex  align-items-center">
-            {allTechnologies?.map((technology) => (
-              <div key={technology._id}>
-                {technology._id === tid &&
-                  technology.concepts.map((concept) => (
-                    <div key={concept._id}>
-                      {concept._id === cid &&
-                        concept.topics.map((topic) => (
-                          <div key={topic._id}>
-                            {topic._id === toid && (
-                                <h2 className="p-1 fw-bold" style={{color:'rgb(42, 82, 152)'}}>{topic.title}</h2>
-                            )}
-                          </div>
-                        ))}
-                    </div>
-                  ))}
-              </div>
-            ))}
-          </div>
+          <Helmet>
+              <title>{filteredTopic?.shortheading}</title>
+              <meta name="description" content="Nested component" />
+          </Helmet>
+          <h2 className="p-1 fw-bold" style={{color:'rgb(42, 82, 152)'}}>{filteredTopic?.title}</h2>
 
           {/* Content Section */}
-          <div className="row">
-            <div className="col-12">
               {uniqueTabs && uniqueTabs.length > 0 ? (
                 <div className="card border-0">
-                  <div className="card-header bg-white px-0">
+                  <div className="card-header bg-white px-0 position-sticky top-0">
                     <ul className="nav nav-tabs card-header-tabs border-bottom-0">
                       {uniqueTabs.map((tab) => (
                         <li className="nav-item" key={tab}>
                           <button
-                            className={`nav-link text-bold ${activeTab === tab ? "active fw-semibold" : ""} 
-                            ${activeTab === tab ? "text-primary" : "text-secondary"}`}
-                            onClick={() => setActiveTab(tab)}
+                            className={`nav-link text-bold ${activeTab === tab ? "text-primary fw-semibold" : "text-secondary"}`}
+                            onClick={() => {
+                              setActiveTab(tab)
+                              localStorage.setItem('activeTab',tab)
+                            }}
                           >
-                            <i
-                              className={`bi bi-${
+                            <i className={`bi bi-${
                                 tab.toLowerCase() === "theory"
                                   ? "book"
                                   : tab.toLowerCase() === "practice"
@@ -84,15 +78,14 @@ function TopicDetails() {
                                   : tab.toLowerCase() === "quiz"
                                   ? "question-circle"
                                   : "file-text"
-                              } me-2`}
-                            ></i>
-                            {tab && tab == "Description"? "Notes": tab}
+                              } me-2`}>
+                            </i>
+                            {tab && tab === "Description"? "Notes": tab}
                           </button>
                         </li>
                       ))}
                     </ul>
                   </div>
-
                   <div className="card-body">
                     {filteredContent.length > 0 ? (
                       <div className="content-wrapper">
@@ -102,14 +95,14 @@ function TopicDetails() {
                               <span className="badge bg-primary me-2">{index + 1}</span>
                               <h5 className="mb-0 ">{content.shortheading}</h5>
                             </div>
-                            <div className="content-body bg-white rounded-3 shadow-sm border border-grey py-4">
+                            <div className="content-body bg-white rounded-3 shadow-sm border border-grey py-4" style={{overflow:"auto"}}>
                               {activeTab === 'Examples'
                               ? parse(content.content).map((el, i) => {
                                   if (el !== '\n' && ((el.type === 'p' && el.props.children !== undefined) || el.type === 'iframe')) {
                                     return (
                                       <div key={i} className="px-2">
                                         <p className={` ms-5 mb-2 ${Array.isArray(el?.props?.children) ? "ps-5" : "ms-0"}`}>{el.props.children}</p>
-                                        {el.type=="iframe" && <span className="ms-5 pb-4 ps-5" ><a href={el.props.src} target="blank">{el.props.src}</a></span>}
+                                        {el.type==="iframe" && <span className="ms-5 pb-4 ps-5" ><a href={el.props.src} target="blank">{el.props.src}</a></span>}
                                       </div>
                                     );
                                   }
@@ -140,8 +133,6 @@ function TopicDetails() {
                   </div>
                 </div>
               )}
-            </div>
-          </div>
         </>
       )}
     </div>

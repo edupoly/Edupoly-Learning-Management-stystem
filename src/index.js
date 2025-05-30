@@ -92,11 +92,11 @@ const router = createBrowserRouter([
                 element: <Technology></Technology>,
               },
               {
-                path: "/technologydetails/:tid",
+                path: "/Training/:tName",
                 element: <Technologydetails></Technologydetails>,
                 children: [
                   {
-                    path: "/technologydetails/:tid/:cid/:toid",
+                    path: "/Training/:tName/:cName/:toName",
                     element: <TopicDetails></TopicDetails>
                   }
                 ]

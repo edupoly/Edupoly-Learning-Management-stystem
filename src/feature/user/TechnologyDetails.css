@@ -23,6 +23,21 @@
   scrollbar-width: thin;
 }
 
+.tech-hover{
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+}
+
+.tech-hover>p:hover{
+  cursor: pointer;
+  background-color: #000;
+}
+
+.tech-hover > .active{
+  background-color: rgb(42, 82, 152);
+}
+
 @media (min-width: 800px) and (max-width: 1439px) {
   .technology-div{
     height: 89vh;

@@ -15,7 +15,7 @@ function AdminTechnology() {
                     Add Technology
                 </Link>
             </div>
-            <h2 className='text-center text-success mb-4'>Latest Technologies</h2>
+            <h2 className='text-center text-success mb-4'>FullStack Training Tutorials</h2>
             <div className='row justify-content-center'>
                 {technologies?.map((technology) => (
                     <div key={technology._id} className='col-md-4 col-lg-3 mb-4'>
