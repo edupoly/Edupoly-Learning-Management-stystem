@@ -10,33 +10,25 @@ function TopicDetails() {
   const tech = allTechnologies?.find((el)=> el.title===tName)
   const concept = tech?.concepts?.find((el)=> el.conceptName===cName.replaceAll('_',' '))
   const filteredTopic = concept?.topics?.find((el)=> el.title===toName.replaceAll('_',' '))
+      var validContents = filteredTopic?.contents?.filter((content) => typeof content.content === "string");
   const tid=tech?._id
   const cid=concept?._id
 
   const { isLoading: isTechnologyLoading } = useTopicdetailsQuery({ tid , cid });
-  const [topicdetails, setTopicdetails] = useState([]);
   const [activeTab, setActiveTab] = useState("");
   const uniqueTabs = useMemo(() => {
-    return [...new Set(topicdetails.map((content) => content.type))];
-  }, [topicdetails]);
-  const filteredContent = topicdetails.filter((content) => content.type === activeTab);
-
-  useEffect(() => {
-    if (filteredTopic) {
-      var validContents = filteredTopic?.contents?.filter((content) => typeof content.content === "string");
-
-      setTopicdetails(validContents || []);
-    }
-  }, [filteredTopic]);
+    return [...new Set(validContents.map((content) => content.type))];
+  }, [validContents]);
+  const filteredContent = validContents.filter((content) => content.type === activeTab);
 
   useEffect(() => {
     const tab =localStorage.getItem('activeTab')
     const findTab = uniqueTabs?.filter((el)=> el===tab)
-    let filteredTab = findTab.length>0 ? tab : topicdetails[0]?.type
+    let filteredTab = findTab.length>0 ? tab : validContents[0]?.type
     setActiveTab(filteredTab)
     localStorage.setItem('activeTab',filteredTab)
     
-  }, [uniqueTabs,topicdetails]);
+  }, [uniqueTabs,validContents]);
 
   return (
     <div className="container-fluid py-1 px-0 bg-white">
