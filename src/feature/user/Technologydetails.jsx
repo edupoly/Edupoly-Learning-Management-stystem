@@ -22,7 +22,7 @@ function TechnologyDetails() {
 
   const handlesubmit = (technology) => {
     if (technology.concepts?.length > 0 && technology.concepts[0].topics?.length > 0) {
-      navigate(`/Training/${technology.title}/${technology.concepts[0].conceptName.replaceAll(' ','_')}/${technology.concepts[0].topics[0].title.replaceAll(' ','_')}`);
+      navigate(`/Training/${technology.title}/${technology.concepts[0].conceptName.replaceAll(' ','-')}/${technology.concepts[0].topics[0].title.replaceAll(' ','-')}`);
     } else {
       alert("No concepts or topics available for this technology.");
     }

@@ -3,16 +3,19 @@ import { useGetAlltechnologiesQuery, useTopicdetailsQuery } from "../../services
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { Helmet } from "react-helmet";
+import './TopicDetails.css'
 
 function TopicDetails() {
   const { tName, cName, toName } = useParams();
   const { data: allTechnologies, isLoading: isAllTechnologiesLoading } = useGetAlltechnologiesQuery();
   const tech = allTechnologies?.find((el)=> el.title===tName)
-  const concept = tech?.concepts?.find((el)=> el.conceptName===cName.replaceAll('_',' '))
-  const filteredTopic = concept?.topics?.find((el)=> el.title===toName.replaceAll('_',' '))
+  const concept = tech?.concepts?.find((el)=> el.conceptName===cName.replaceAll('-',' '))
+  const filteredTopic = concept?.topics?.find((el)=> el.title===toName.replaceAll('-',' '))
       var validContents = filteredTopic?.contents?.filter((content) => typeof content.content === "string");
   const tid=tech?._id
   const cid=concept?._id
+    const [modalSrc, setModalSrc] = useState(null);
+
 
   const { isLoading: isTechnologyLoading } = useTopicdetailsQuery({ tid , cid });
   const [activeTab, setActiveTab] = useState("");
@@ -29,6 +32,34 @@ function TopicDetails() {
     localStorage.setItem('activeTab',filteredTab)
     
   }, [uniqueTabs,validContents]);
+
+
+  const openModal = (src) => {
+    setModalSrc(src);
+    const modalEl = document.getElementById("fullScreenImage");
+    if (modalEl) modalEl.style.display = "block";
+  };
+
+  const closeModal = () => {
+    const modalEl = document.getElementById("fullScreenImage");
+    if (modalEl) modalEl.style.display = "none";
+    setModalSrc(null);
+  };
+  const options = {
+    replace: (domNode) => {
+      if (domNode.type === 'tag' && domNode.name === 'img') {
+        const src = domNode.attribs.src;
+        return (
+          <img
+            {...domNode.attribs}
+            onClick={() => openModal(src)}
+            style={{ cursor: "pointer" }}
+            alt=""
+          />
+        );
+      }
+    },
+  };
 
   return (
     <div className="container-fluid py-1 px-0 bg-white">
@@ -100,8 +131,9 @@ function TopicDetails() {
                                   }
                                   return null; // Return null for elements that don't match
                                 })
-                              : parse(content.content)
+                              : parse(content.content,options)
                               }
+                              {console.log("hhh",parse(content.content))}
                             </div>
                           </div>
                         ))}
@@ -127,6 +159,16 @@ function TopicDetails() {
               )}
         </>
       )}
+      {modalSrc!= null && 
+      <div className="modal  bg-opacity-25" id="fullScreenImage" onClick={(e) => { if (e.target.classList.contains('modal')) closeModal();}}>
+          <div className="d-flex justify-content-center">
+            <span className="close" onClick={closeModal}>
+              &times;
+            </span>
+            <img className="modal-img" src={modalSrc} alt=""/>
+          </div>
+        </div>
+      }
     </div>
   );
 }

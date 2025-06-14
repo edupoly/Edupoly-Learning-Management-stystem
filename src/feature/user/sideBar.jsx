@@ -17,12 +17,12 @@ function SideBar({ technology, tName }) {
             {concept.topics?.map((topic) => (
               <Link
                 key={topic._id}
-                to={`/Training/${tName}/${concept.conceptName.replaceAll(" ","_")}/${topic.title.replaceAll(" ", "_")}`}
+                to={`/Training/${tName}/${concept.conceptName.replaceAll(" ","-")}/${topic.title.replaceAll(" ", "-")}`}
                 className="d-block p-1 text-decoration-none border-start border-4 border-transparent topic-link"
               >
                 <div
                     className={`ms-3 ${
-                    pathname.split("/")[4] === topic?.title.replaceAll(" ", "_")
+                    pathname.split("/")[4] === topic?.title.replaceAll(" ", "-")
                         ? "bg-primary rounded text-light px-2 py-1"
                         : "text-body"
                     }`}

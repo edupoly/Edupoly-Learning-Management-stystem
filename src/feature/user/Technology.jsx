@@ -11,7 +11,7 @@ function Technology() {
     const handlesubmit=(technology)=>{
         if (technology.concepts?.length > 0 && technology.concepts[0].topics?.length > 0) {
             // navigate(`/technologydetails/${technology._id}/${technology.concepts[0]._id}/${technology.concepts[0].topics[0]._id}`);
-            navigate(`/Training/${technology.title}/${technology.concepts[0].conceptName.replace(' ','_')}/${technology.concepts[0].topics[0].title.replaceAll(' ','_')}`);
+            navigate(`/Training/${technology.title}/${technology.concepts[0].conceptName.replace(' ','-')}/${technology.concepts[0].topics[0].title.replaceAll(' ','-')}`);
         } else {
             alert("No concepts or topics available for this technology.");
         }
