@@ -105,6 +105,7 @@ function TopicChildDetails({ activeTab, filteredContent }) {
                       }
                     }
                   }
+                  return null;
                 })}
               </div>
             </div>
@@ -119,7 +120,7 @@ function TopicChildDetails({ activeTab, filteredContent }) {
           <div>No content available for this section yet.</div>
         </div>
       )}
-      {modalSrc?.src != undefined && (
+      {modalSrc?.src !== undefined && (
         <Modal modalSrc={modalSrc} setModalSrc={setModalSrc}></Modal>
       )}
     </div>

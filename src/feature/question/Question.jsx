@@ -6,7 +6,6 @@ import QuestionTitle from './QuestionTitle'
 import QuestionTopic from './QuestionTopic'
 import {  convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
 import parse from 'html-react-parser'
 
 function Question() {
@@ -66,7 +65,7 @@ function Question() {
           {
             question.options && question.options.map((option,i)=>{
               return(
-                <li className={question.answer!=='' && i==question.answer?'bg-success':''}>
+                <li key={i} className={question.answer !== '' && i === Number(question.answer) ? 'bg-success' : ''}>
                   {option && parse(draftToHtml(convertToRaw(option.getCurrentContent())))}
                 </li>
               )

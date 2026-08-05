@@ -4,7 +4,7 @@ import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { useAddcontentMutation, useLazyGettechnologyQuery, useLazyTopicdetailsQuery } from '../../services/technology';
+import { useAddcontentMutation, useLazyTopicdetailsQuery } from '../../services/technology';
 import { useNavigate, useParams } from 'react-router-dom';
 
 function AddContent() {
@@ -23,8 +23,6 @@ function AddContent() {
 
   let editorState = EditorState.createEmpty();
   let [description, setDescription] = useState(editorState);
-  let [isError, setError] = useState(null);
-
   let onChangeValue = (e) => {
     setTopicInfo({
       ...topicInfo,
@@ -145,9 +143,6 @@ function AddContent() {
                     value={draftToHtml(convertToRaw(description.getCurrentContent()))}
                   />
                 </div>
-
-                {/* Error Message */}
-                {isError !== null && <div className="alert alert-danger">{isError}</div>}
 
                 {/* Submit Button */}
                 <div className="text-center">
@@ -332,4 +327,3 @@ export default AddContent;
 // }
 
 // export default AddContent;
-

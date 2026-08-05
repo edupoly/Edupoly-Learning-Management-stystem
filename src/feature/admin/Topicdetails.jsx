@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useGetAlltechnologiesQuery, useTopicdetailsQuery } from "../../services/technology";
 import { useDeletecontentMutation, useLazyTopicdetailsQuery } from "../../services/technology";
 import { Link, Outlet, useParams } from "react-router-dom";
@@ -11,8 +11,8 @@ function Topicdetails() {
   const [activeTab, setActiveTab] = useState(null);
 
   const [deletecontentFn] = useDeletecontentMutation();
-  const [fetchTopicdetails, { data: fetchedDetails }] = useLazyTopicdetailsQuery();
-  const {data,isLoading}=useGetAlltechnologiesQuery()
+  const [fetchTopicdetails] = useLazyTopicdetailsQuery();
+  const { data } = useGetAlltechnologiesQuery();
   
 
 
@@ -31,7 +31,10 @@ function Topicdetails() {
   }, [technology, cid, topicId]);
 
   // Extract unique content types dynamically
-  const uniqueTabs = [...new Set(topicdetails.map((content) => content.type))];
+  const uniqueTabs = useMemo(
+    () => [...new Set(topicdetails.map((content) => content.type))],
+    [topicdetails]
+  );
 
   // Set the first available tab as active if not already set
   useEffect(() => {
@@ -148,4 +151,3 @@ function Topicdetails() {
 }
 
 export default Topicdetails;
-
