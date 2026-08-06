@@ -23,8 +23,8 @@ function Technology() {
           technology.title
         }/${technology.concepts[0].conceptName.replaceAll(
           " ",
-          "-"
-        )}/${technology.concepts[0].topics[0].title.replaceAll(" ", "-")}`
+          "-",
+        )}/${technology.concepts[0].topics[0].title.replaceAll(" ", "-")}`,
       );
     } else {
       alert("No concepts or topics available for this technology.");
@@ -35,7 +35,7 @@ function Technology() {
     <div className="d-flex flex-column min-vh-100">
       <div className="container mt-4 flex-grow-1">
         <h2 className="text-center text-success mb-4">
-          FullStack Training Tutorials
+          Edupoly FullStack Training Tutorials
         </h2>
         <div className="row justify-content-start">
           {technologies?.map((technology) => (
@@ -69,8 +69,13 @@ function Technology() {
 
       <footer className="bg-dark text-white-50 py-3 mt-4">
         <div className="container d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2">
-          <small>&copy; {new Date().getFullYear()} Edupoly. All rights reserved.</small>
-          <a className="text-white text-decoration-none" href="/privacy-policy.html">
+          <small>
+            &copy; {new Date().getFullYear()} Edupoly. All rights reserved.
+          </small>
+          <a
+            className="text-white text-decoration-none"
+            href="/privacy-policy.html"
+          >
             Privacy Policy
           </a>
         </div>
